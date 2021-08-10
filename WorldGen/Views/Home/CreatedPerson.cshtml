@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "CreatedPerson";
+
+}
+
+@foreach (var group in Model) {
+<section>
+
+    <h1>The random generated name is:  </h1>
+    <h3>
+        @if (@group.Gender == "male") {
+            @:<span style='color:blue'>@group.FirstName @group.LastName</span>
+       } else {
+            @:
+            <span style='color:pink'>@group.FirstName @group.LastName</span>
+       }
+    </h3>
+    <h4>Gender: @group.Gender</h4>
+    <h4>Race: @group.Race</h4>
+
+</section>
+
+
+
+}
+
