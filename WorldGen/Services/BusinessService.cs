@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WorldGen.Models;
+using WorldGen.Services;
 
 namespace WorldGen.Services
 {
     public class BusinessService
-    {
-        
-        public string GetBusinessName()
+    {       
+        string BusinessName;
+        public string GetBusinessName(string businessType)
         {
-            string BusinessName = "The Store";
+            string owner;
+            
+            string BusinessName = "The Store " + businessType;
             return BusinessName;
         }
 
@@ -39,13 +42,16 @@ namespace WorldGen.Services
 
         public Business CreateTheBusiness()
         {
-            string businessName = "General store";
+            string BusinessType = GetBusinessType();
+            string BusinessName = GetBusinessName(BusinessType);
+
             Business randomBusiness = new Business()
             {
-                BusinessName = GetBusinessName(),
-                BusinessType = GetBusinessType(),
+                BusinessName = BusinessName,
+                BusinessType = BusinessType
             };
             return randomBusiness;
         }
+        
     }
 }

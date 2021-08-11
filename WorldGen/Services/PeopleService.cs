@@ -13,10 +13,7 @@ namespace WorldGen.Services
 
         List<string> firstNameList = new List<string>();
         List<string> lastNameList = new List<string>();
-        string FirstName;
-        string LastName;
-        string FullName;
-        string Race;
+        
 
         //Gets the gender of the Person
         public string GetGender()
@@ -78,6 +75,7 @@ namespace WorldGen.Services
         //Get Race
         public string GetRace()
         {
+            string Race;
             var rnd = new Random();
             int raceChance = rnd.Next(1, 101);
             if (raceChance >= 80)
@@ -102,7 +100,6 @@ namespace WorldGen.Services
             string race = GetRace();
 
             People randomName = new People()
-            //string[] randomName = new string[]
             {
                 FirstName = FirstName,
                 LastName = LastName,

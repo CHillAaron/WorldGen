@@ -22,6 +22,7 @@ namespace WorldGen.Controllers
             peopleService = new PeopleService();
             businessService = new BusinessService();
         }
+        
 
 
 
@@ -36,12 +37,11 @@ namespace WorldGen.Controllers
         }
 
         [HttpPost("personCreate")]
-        public IActionResult PersonCreate(int numToCreated)
+        public IActionResult PersonCreate(int numToCreated, List<People> RandomGen)
         {
-
             try
             {
-                List<People> RandomGen = new List<People>();
+                //List<People> RandomGen = new List<People>();
                 int i = 1;
                 while (i <= numToCreated)
                 {
@@ -49,7 +49,7 @@ namespace WorldGen.Controllers
                     i += 1;
                 }
                 return View("CreateBusiness", RandomGen);
-
+                //return View("CreatedPerson", RandomGen);
             }
             catch (IOException e)
             {
@@ -57,37 +57,42 @@ namespace WorldGen.Controllers
                 Console.WriteLine(e.Message);
                 return View("CreatePerson");
             }
-
-
         }
 
-        //public IActionResult CreatedPerson()
-        //{
+        public IActionResult CreatedPerson()
+        {
+            return View();
+        }
 
-        //    return View();
-        //}
-
-        public IActionResult CreateBusiness()
+        public IActionResult CreateBusiness(List<People> RandomGen)
         {
             return View();
         }
 
         [HttpPost("businessCreate")]
-        public IActionResult BusinessCreate(int numToCreated)
+        public IActionResult BusinessCreate(int numToCreated, List<People> RandomGen)
         {
-
             try
             {
+                
                 List<Business> RandomBiz = new List<Business>();
                 int i = 1;
+                var rnd = new Random();
+                int RandomPersonSpot = rnd.Next(RandomGen.Count);
+                Console.WriteLine("This is the RandomPersonSpot: " + RandomPersonSpot);
+                String RandomPerson = "Johnny";
+
                 while (i <= numToCreated)
                 {
                     RandomBiz.Add(businessService.CreateTheBusiness());
                     i += 1;
                 }
-                
-                return View("CreatedBusiness", RandomBiz);
 
+                foreach (People manu in RandomGen)
+                {
+                    Console.WriteLine("People are: " + manu);
+                }
+                return View("CreatedBusiness", RandomBiz);
             }
 
             catch (IOException e)
@@ -96,20 +101,16 @@ namespace WorldGen.Controllers
                 Console.WriteLine(e.Message);
                 return View("businessCreate");
             }
-
         }
-            public IActionResult CreatedBusiness()
-            {
-                return View();
-            }
-
-
-
-            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-            public IActionResult Error()
-            {
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
+        public IActionResult CreatedBusiness()
+        {
+            return View();
         }
-    
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+       }
 }
