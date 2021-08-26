@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,8 +23,8 @@ namespace WorldGen.Controllers
             peopleService = new PeopleService();
             businessService = new BusinessService();
         }
-        
 
+        List<People> RandomGen = new List<People>();
 
 
         public IActionResult Index()
@@ -37,16 +38,30 @@ namespace WorldGen.Controllers
         }
 
         [HttpPost("personCreate")]
-        public IActionResult PersonCreate(int numToCreated, List<People> RandomGen)
+        public IActionResult PersonCreate(int numToCreated)
         {
             try
             {
                 //List<People> RandomGen = new List<People>();
+                var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
+                using var conn = new NpgsqlConnection(database);
+                conn.Open();
                 int i = 1;
+                int charindex = 0;
                 while (i <= numToCreated)
                 {
+
                     RandomGen.Add(peopleService.CreateThePerson());
+                    using (var cmd = new NpgsqlCommand("insert into full_names (first_name, last_name, gender, race) values (@first, @last, @gender, @race)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("first", RandomGen[charindex].FirstName);
+                        cmd.Parameters.AddWithValue("last", RandomGen[charindex].LastName);
+                        cmd.Parameters.AddWithValue("gender", RandomGen[charindex].Gender);
+                        cmd.Parameters.AddWithValue("race", RandomGen[charindex].Race);
+                        cmd.ExecuteNonQuery();
+                    }
                     i += 1;
+                    charindex += 1;
                 }
                 return View("CreateBusiness", RandomGen);
                 //return View("CreatedPerson", RandomGen);
@@ -66,20 +81,20 @@ namespace WorldGen.Controllers
 
         public IActionResult CreateBusiness(List<People> RandomGen)
         {
-            return View();
+            var rnd = new Random();
+            int RandomPersonSpot = rnd.Next(RandomGen.Count);
+            return View(RandomPersonSpot);
         }
 
         [HttpPost("businessCreate")]
-        public IActionResult BusinessCreate(int numToCreated, List<People> RandomGen)
+        public IActionResult BusinessCreate(int numToCreated)
         {
             try
             {
                 
                 List<Business> RandomBiz = new List<Business>();
                 int i = 1;
-                var rnd = new Random();
-                int RandomPersonSpot = rnd.Next(RandomGen.Count);
-                Console.WriteLine("This is the RandomPersonSpot: " + RandomPersonSpot);
+                //var rnd = new Random();
                 String RandomPerson = "Johnny";
 
                 while (i <= numToCreated)
@@ -104,6 +119,9 @@ namespace WorldGen.Controllers
         }
         public IActionResult CreatedBusiness()
         {
+            //Console.WriteLine("************************************");
+            //Console.WriteLine("This is the Stock Items: "+ );
+            //Console.WriteLine("************************************");
             return View();
         }
 

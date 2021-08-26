@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using WorldGen.Models;
 
 namespace WorldGen.Services
@@ -10,6 +12,11 @@ namespace WorldGen.Services
         string maleName = @"wwwroot/charInfo/maleNames.txt";
         string femaleName = @"wwwroot/charInfo/maleNames.txt";
         string lastName = @"wwwroot/charInfo/lastNames.txt";
+
+
+        //var connString = "Host=myserver;Username=mylogin;Password=mypass;Database=mydatabase";
+
+
 
         List<string> firstNameList = new List<string>();
         List<string> lastNameList = new List<string>();
@@ -21,7 +28,7 @@ namespace WorldGen.Services
             string gender;
             Random rnd = new Random();
             int genderChance = rnd.Next(1, 101);
-            if (genderChance >= 30)
+            if (genderChance >= 40)
             {
                 return gender = "female";
             }
@@ -33,47 +40,74 @@ namespace WorldGen.Services
 
         public String GetFirstName(string gender)
         {
-            if (gender == "male")
+            int firstId;
+            var rnd = new Random();
+            if (gender == "female")
             {
-                using (var sr = new StreamReader(maleName))
-
-                    while (sr.Peek() >= 0)
-                    {
-                        firstNameList.Add(sr.ReadLine());
-                    }
+                firstId = rnd.Next(1, 1023);
             }
             else
             {
-                using (var sr = new StreamReader(femaleName))
-
-                    while (sr.Peek() >= 0)
-                    {
-                        firstNameList.Add(sr.ReadLine());
-                    }
+                firstId = rnd.Next(1, 1144);
             }
+            var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
+            using var conn = new NpgsqlConnection(database);
+            conn.Open();
+            if (gender == "male")
+            {
+                //    using (var sr = new StreamReader(maleName))
 
-            var rnd = new Random();
-            int first = rnd.Next(firstNameList.Count);
-            string FirstName = firstNameList[first];
+                //        while (sr.Peek() >= 0)
+                //        {
+                //            firstNameList.Add(sr.ReadLine());
+                //        }
+                using (var cmd = new NpgsqlCommand($"SELECT* FROM  male_names where id = {firstId}", conn))
+                {
+                    //Console.WriteLine("This is the npgsqlCommand count: " + conn.Database);
+                    NpgsqlDataReader dr = cmd.ExecuteReader();
+                    dr.Read();
+                    string firstName = dr[0].ToString();
+                     return firstName;
+                }
+            }
+            else
+            {
+                //using (var sr = new StreamReader(femaleName))
 
-            return FirstName;
+                //    while (sr.Peek() >= 0)
+                //    {
+                //        firstNameList.Add(sr.ReadLine());
+                //    }
+                using (var cmd = new NpgsqlCommand($"SELECT* FROM  female_names where id = {firstId}", conn))
+                {
+                    //Console.WriteLine("This is the npgsqlCommand count: " + conn.Database);
+                    NpgsqlDataReader dr = cmd.ExecuteReader();
+                    dr.Read();
+                    string firstName = dr[0].ToString();
+                    return firstName;
+                }
+            }
         }
 
         //Gets Last name
         public string GetLastName()
         {
             var rnd = new Random();
-            using (var sr = new StreamReader(lastName))
-                while (sr.Peek() >= 0)
-                {
-                    lastNameList.Add(sr.ReadLine());
-                }
-            int last = rnd.Next(lastNameList.Count);
-            string LastName = firstNameList[last];
-            return LastName;
+            int lastId = rnd.Next(1, 578);
+            var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
+            using var conn = new NpgsqlConnection(database);
+            conn.Open();
+            using (var cmd = new NpgsqlCommand($"SELECT* FROM  last_names where id = {lastId}", conn))
+            {
+                //Console.WriteLine("This is the npgsqlCommand count: " + conn.Database);
+                NpgsqlDataReader dr = cmd.ExecuteReader();
+                dr.Read();
+                string lastName = dr[0].ToString();
+                return lastName;
+            }
         }
         //Get Race
-        public string GetRace()
+        public string GetRace() 
         {
             string Race;
             var rnd = new Random();

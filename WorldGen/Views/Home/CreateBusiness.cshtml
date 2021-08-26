@@ -1,10 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
-    
+
 }
 <h1>@ViewData["Title"]</h1>
 
 <form action="/businessCreate" method="post">
-    <input type="number" name="numToCreated" value="1"/>
+    <input type="number" name="numToCreated" value="1" />
     <button>Create Business</button>
 </form>
+
+@foreach (var group in Model)
+{
+    <section>
+
+        <h1>The random generated name is:  </h1>
+        
+        <h4>Gender: @group.Gender</h4>
+        <h4>Race: @group.Race</h4>
+
+    </section>
+}
