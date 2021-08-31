@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using WorldGen.Models;
 using WorldGen.Services;
+using System.Linq;
+
 
 namespace WorldGen.Controllers
 {
@@ -29,7 +31,7 @@ namespace WorldGen.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("CreatePerson");
+            return RedirectToAction("CreateBusiness");
         }
 
         public IActionResult CreatePerson()
@@ -93,6 +95,7 @@ namespace WorldGen.Controllers
             {
                 
                 List<Business> RandomBiz = new List<Business>();
+                
                 int i = 1;
                 //var rnd = new Random();
                 String RandomPerson = "Johnny";
@@ -103,10 +106,36 @@ namespace WorldGen.Controllers
                     i += 1;
                 }
 
-                foreach (People manu in RandomGen)
-                {
-                    Console.WriteLine("People are: " + manu);
-                }
+                Console.WriteLine("************************************");
+                int j = 0;
+                //foreach (var group in RandomBiz[j].InventoryList)
+                //{
+                //    Console.WriteLine("item_name: {0}, Value: {1}", group.item_name, group.Value);
+
+                //}
+                //while (j < RandomBiz.Count)
+                //{
+                //    int k = 0;
+                //    Console.WriteLine("This is the random biz inventory count: " + RandomBiz[j].InventoryList.Count);
+                //    while (k < RandomBiz[j].InventoryList.Count)
+                //    {
+                //        Console.WriteLine("This is the inventory List Key: {0}, Value: {1} " + RandomBiz[j].InventoryList[k].ElementAt(0).Value);
+                //        k++;
+                //    }
+                //    //k = 0;
+                //    j++;
+                //}
+                //foreach (var inventory in RandomBiz[0].InventoryList)
+                //{
+                //    foreach (var item in inventory)
+                //    {
+                //        Console.WriteLine("This is the code that needs to come out: " + item);
+                //        j++;
+
+                //    }
+                //}
+
+                Console.WriteLine("************************************");
                 return View("CreatedBusiness", RandomBiz);
             }
 

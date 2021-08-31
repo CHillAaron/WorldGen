@@ -48,7 +48,7 @@ namespace WorldGen.Services
             }
             else if (businessTypeChance >= 55)
             {
-                return BusinessType = "Weapon";
+                return BusinessType = "WEAPON";
             }
             else
             {
@@ -59,15 +59,7 @@ namespace WorldGen.Services
         public List<Dictionary<string, string>> GetIventory(string BusinessType)
         {
 
-            ////opens the connection
-            //var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
-            //using var conn = new NpgsqlConnection(database);
-            //conn.Open();
-            ////Creates the count of how many items of that type there are and shrinks it down to an integer to be used.
-            //var inventoryCreate = new NpgsqlCommand($"SELECT COUNT(*) FROM inventory where item_type = 'TOOL'", conn);
-            //Int64 iventoryCreated = (Int64)inventoryCreate.ExecuteScalar();
-            //int inventoryAmount = (int)iventoryCreated;
-            int inventoryAmount = GetIventoryCount();
+            int inventoryAmount = GetIventoryCount(BusinessType);
             //selects a random number from 1 and the amount of the item type to give to the shop
             var rnd = new Random();
             int inventoryStock = rnd.Next(1, inventoryAmount);
@@ -82,7 +74,7 @@ namespace WorldGen.Services
 
             int i = 0;
 
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM inventory where item_type = 'TOOL'", conn))
+                using (var cmd = new NpgsqlCommand($"SELECT * FROM inventory where item_type = '{BusinessType}'", conn))
                 {
                     NpgsqlDataReader dr = cmd.ExecuteReader();
             while (i < inventoryStock)
@@ -95,14 +87,14 @@ namespace WorldGen.Services
                 return listOfTools;
         }
 
-        public int GetIventoryCount()
+        public int GetIventoryCount(string BusinessType)
         {
             //opens the connection
             var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
             using var conn = new NpgsqlConnection(database);
             conn.Open();
             //Creates the count of how many items of that type there are and shrinks it down to an integer to be used.
-            var inventoryCreate = new NpgsqlCommand($"SELECT COUNT(*) FROM inventory where item_type = 'TOOL'", conn);
+            var inventoryCreate = new NpgsqlCommand($"SELECT COUNT(*) FROM inventory where item_type = '{BusinessType}'", conn);
             Int64 iventoryCreated = (Int64)inventoryCreate.ExecuteScalar();
             int inventoryAmount = (int)iventoryCreated;
             conn.Close();
