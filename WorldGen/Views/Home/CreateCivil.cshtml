@@ -1,0 +1,18 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    <h1>Select the details for the civilization you want to create.</h1>
+
+    <form action="/civilCreate" method="post">
+        <select name="PeopleToCreate">
+            <option value="">Select Population Size</option>
+            <option value="1">Hamlet (~ 50 people)</option>
+            <option value="2">Village (~200 people)</option>
+            <option value="3">Small town (~600 people)</option>
+            <option value="4">Large Town (~1200 people)</option>
+        </select>
+        <input type="number" name="BusinessToCreate" value="1"/>
+        <button>Create Civilization</button>
+    </form>
+}

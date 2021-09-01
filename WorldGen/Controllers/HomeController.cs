@@ -24,107 +24,54 @@ namespace WorldGen.Controllers
             businessService = new BusinessService();
         }
 
-        List<People> RandomGen = new List<People>();
+        
 
 
         public IActionResult Index()
         {
-            return RedirectToAction("CreatePerson");
+            return RedirectToAction("CreateCivil");
         }
 
-        public IActionResult CreatePerson()
+        public IActionResult CreateCivil()
         {
             return View();
         }
-
-        [HttpPost("personCreate")]
-        public IActionResult PersonCreate(int numToCreated)
+        [HttpPost("civilCreate")]
+        public IActionResult CivilCreate(int BusinessToCreate, int PeopleToCreate)
         {
             try
             {
-                //List<People> RandomGen = new List<People>();
-                var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
-                using var conn = new NpgsqlConnection(database);
-                conn.Open();
-                int i = 1;
+                //This is the method of creating the new people
+                List<People> RandomGen = new List<People>();
+                int population = peopleService.GetPopulation(PeopleToCreate);
+                int i = 0;
                 int charindex = 0;
-                while (i <= numToCreated)
+                while (i <= population)
                 {
-
                     RandomGen.Add(peopleService.CreateThePerson());
-                    using (var cmd = new NpgsqlCommand("insert into full_names (first_name, last_name, gender, race) values (@first, @last, @gender, @race)", conn))
-                    {
-                        cmd.Parameters.AddWithValue("first", RandomGen[charindex].FirstName);
-                        cmd.Parameters.AddWithValue("last", RandomGen[charindex].LastName);
-                        cmd.Parameters.AddWithValue("gender", RandomGen[charindex].Gender);
-                        cmd.Parameters.AddWithValue("race", RandomGen[charindex].Race);
-                        cmd.ExecuteNonQuery();
-                    }
                     i += 1;
-                    charindex += 1;
+                    //charindex += 1;
                 }
-                return View("CreateBusiness", RandomGen);
-                //return View("CreatedPerson", RandomGen);
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-                return View("CreatePerson");
-            }
-        }
 
-        public IActionResult CreatedPerson()
-        {
-            return View();
-        }
-
-        public IActionResult CreateBusiness(List<People> RandomGen)
-        {
-            var rnd = new Random();
-            int RandomPersonSpot = rnd.Next(RandomGen.Count);
-            return View(RandomPersonSpot);
-        }
-
-        [HttpPost("businessCreate")]
-        public IActionResult BusinessCreate(int numToCreated)
-        {
-            try
-            {
-                
+                //This is the method of creating the business
                 List<Business> RandomBiz = new List<Business>();
-                int i = 1;
-                //var rnd = new Random();
-                String RandomPerson = "Johnny";
+                int j = 1;
 
-                while (i <= numToCreated)
+                while (i <= BusinessToCreate)
                 {
                     RandomBiz.Add(businessService.CreateTheBusiness());
-                    i += 1;
+                    j += 1;
                 }
-
-                foreach (People manu in RandomGen)
-                {
-                    Console.WriteLine("People are: " + manu);
-                }
-                return View("CreatedBusiness", RandomBiz);
+                List<List> businessAndPeople = new List<List>();
+                return View("CreatedCivil", RandomBiz);
             }
-
             catch (IOException e)
             {
-                Console.WriteLine("The file could not be read:");
+                Console.WriteLine("The Civilization could not be created:");
                 Console.WriteLine(e.Message);
-                return View("businessCreate");
+                return View("CreateCivil");
             }
         }
-        public IActionResult CreatedBusiness()
-        {
-            //Console.WriteLine("************************************");
-            //Console.WriteLine("This is the Stock Items: "+ );
-            //Console.WriteLine("************************************");
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

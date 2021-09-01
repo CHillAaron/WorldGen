@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewData["Title"] = "CreatedPerson";
+
+}
+
+<section>
+
+    <h1 class="text-center">New Civilization Made</h1>
+    <div>
+        <div>
+            @foreach (var group in Model)
+            {
+            <section>
+
+                <h1>The random generated business is:  </h1>
+
+                <h4>Business Name: @group.BusinessName</h4>
+                <h4>BusinessType: @group.BusinessType</h4>
+
+            </section>
+            <div class="m-3 d-flex flex-wrap">
+                @foreach (var inventory in group.InventoryList)
+                {
+                <br />
+                <div class="border border-primary m-3 ">
+                    @foreach (var item in inventory)
+                    {
+                    @switch (item.Key)
+                    {
+                    case ("item_name"):
+                    <h4>Item Name: @item.Value</h4>
+                    break;
+                    case ("item_type"):
+                    <h4>Item Type: @item.Value</h4>
+                    break;
+                    case ("item_price"):
+                    <h4>Item Price: @item.Value</h4>
+                    break;
+                    case ("money_type"):
+                    <h4>Curency used: @item.Value</h4>
+                    break;
+                    }
+                    }
+                </div>
+                <br />
+
+                }
+            </div>
+            }
+        </div>
+    </div>
+</section>

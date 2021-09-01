@@ -125,6 +125,49 @@ namespace WorldGen.Services
                 return Race = "Human";
             }
         }
+        void addToDatabase(string gender, string firstName, string lastName, string race)
+        {
+            var database = "Host=192.168.1.104;Username=postgres;Password=root;Database=WorldGen";
+            using var conn = new NpgsqlConnection(database);
+            conn.Open();
+            using (var cmd = new NpgsqlCommand("insert into full_names (first_name, last_name, gender, race) values (@first, @last, @gender, @race)", conn))
+            {
+                cmd.Parameters.AddWithValue("first", firstName);
+                cmd.Parameters.AddWithValue("last", lastName);
+                cmd.Parameters.AddWithValue("gender", gender);
+                cmd.Parameters.AddWithValue("race", race);
+                cmd.ExecuteNonQuery();
+            }
+            conn.Close();
+        }
+
+        public int GetPopulation(int PeopleToCreate)
+        {
+            int min = 0;
+            int max = 0;
+            switch (PeopleToCreate)
+            {
+                case (1):
+                    min = 42;
+                    max = 63;
+                    break;
+                case (2):
+                    min = 187;
+                    max = 213;
+                    break;
+                case (3):
+                    min = 578;
+                    max = 608;
+                    break;
+                case (4):
+                    min = 1142;
+                    max = 1290;
+                    break;
+            }
+            var rnd = new Random();
+            int population = rnd.Next(min, max);
+            return population;
+        }
 
         public People CreateThePerson()
         {
@@ -132,6 +175,7 @@ namespace WorldGen.Services
             string FirstName = GetFirstName(gender);
             string LastName = GetLastName();
             string race = GetRace();
+            //addToDatabase(gender, FirstName, LastName, race);
 
             People randomName = new People()
             {
